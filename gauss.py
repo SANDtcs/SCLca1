@@ -74,3 +74,30 @@ for i in range(10):
   print(solutions)
 for i in range(columns - 1):
   print("x", i + 1, " = ", solutions[i], sep = "")
+  
+  
+  
+  
+  #Gauss Seidal method 2
+  print('\n\n*** GAUSS SEIDAL METHOD IMPLEMENTATION ***')
+def seidal(a,b,x):
+    n=len(a)   
+    for i in range(0,n):
+        d=b[i]
+        for j in range(0,n):
+            if(i!=j):
+                d-=a[i][j]*x[j]
+        x[i]=d/a[i][i]
+            
+    return x
+
+x = [0, 0, 0]                        
+a = [[2,3,-1],[3,2,1],[1,-5,3]]
+b = [5,10,0]
+for i in range(0,25):
+    x=seidal(a,b,x)
+    print(x)
+    print()
+
+new_list = [round(item) for item in x]
+print("The answer is: ",new_list)
