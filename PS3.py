@@ -1,6 +1,6 @@
 from sympy import *
-
 import math
+
 
 
 
@@ -39,22 +39,38 @@ bisection(x1, x2, expr)
 
 
 # Regula Falsi Method
-def f(x):
-    return 3*x - math.cos(x) - 1
+def regula_false(f, limit):
+    a = limit[0]
+    b = limit[1]
 
-print('\n\n*** Regula Falsi METHOD IMPLEMENTATION ***')
-a=0
-b=1
+    if f.subs(x, a) < 0:
+        pass
+    else:
+        temp = b
+        b = a
+        a = temp
 
-h = (abs(f(a))*(b-a))/(abs(f(a)) + abs(f(b)))
+    h = float(abs(f.subs(x, a)) * (b - a)) / float(abs(f.subs(x, a)) + abs(f.subs(x, b)))
+    t = float(a + h)
 
-while(h > 0.001):
-    a = a+h
-    h = (abs(f(a))*(b-a))/(abs(f(a)) + abs(f(b)))
-    
-print(f(a))
-print(a)
+    while f.subs(x, t) > 0.00001 or f.subs(x, t) < -0.00001:
+        print("t =", t, "\nf(t) =", f.subs(x, t), end = "\n\n")
+        if f.subs(x, t) < 0:
+            a = t
+        else:
+            b = t
 
+        h = float(abs(f.subs(x, a)) * (b - a)) / float(abs(f.subs(x, a)) + abs(f.subs(x, b)))
+        t = a + h
+
+    print("SOLUTION\nx = {x}\nf(x) = {fx}".format(x = t, fx = f.subs(x, t)))
+
+
+
+f = 3*x + cos(x) - x
+limit = [-1, 0]
+
+regula_false(f,limit)
 
 
 
@@ -65,36 +81,27 @@ def f(x):
 def g(x):
     return 3*pow(x, 2) - 14*x - 8
 
-def FixedPointiteration(x0,e,N):
-    print('\n\n*** ITERATION TABLE ***')
-    step = 1
-    flag = 1
-    condition = True
-    while condition:
-        if g(x0) == 0.0:
-            print('Divide by zero error!')
-            break
-       
-        x1 = x0 - f(x0)/g(x0)
-        print('Iteration-%d, x1 = %0.4f and f(x1) = %0.4f' % (step, x1, f(x1)))
-        x0 = x1
-        step = step + 1
-       
-        if step > N:
-            flag = 0
-            break
-       
-        condition = abs(f(x1)) > e
-   
-    if flag==1:
-        print('\nRequired root is: %0.6f' % x1)
-    else:
-        print('\nNot Convergent.')
+def fixed_point_iteration(f, limit):
+    a = float(limit[0])
+    b = float(limit[1])
 
-x0 = float(input('Enter Guess: '))
-e = float(input('Tolerable Error: '))
-N = int(input('Maximum Step: '))
-FixedPointiteration(x0,e,N)
+    phi = -(f - f.coeff(x, 1) * x) / f.coeff(x, 1)
+
+    if diff(phi, x).subs(x, a) < 1 and diff(phi, x).subs(x, b) < 1:
+        pass
+    else:
+        print("Cannot use Fixed Point Iteration Method")
+        return
+
+    t = float(a)
+
+    while f.subs(x, t) > 0.0001 or f.subs(x, t) < -0.0001:
+        print("t =", t, "\nf(t) =", f.subs(x, t), end = "\n\n")
+        t = phi.subs(x, t)
+
+    print("SOLUTION\nx = {x}\nf(x) = {fx}".format(x = t, fx = f.subs(x, t)))
+
+fixed_point_iteration(f,limit)
 
 
 
@@ -104,35 +111,24 @@ FixedPointiteration(x0,e,N)
 
 
 # Newton rhapson method
-def derivative(value,expr):
-    
-    expr_diff = diff(expr, x)
-    val=expr_diff.subs(x,value)
-    return val
+def newton_raphson(f, limit):
+    a = limit[0]
+    b = limit[1]
+    t = float(a + b) / 2
 
+    while f.subs(x, t) > 0.001 or f.subs(x, t) < -0.001:
+        print("t =", t, "\nf(t) =", f.subs(x, t), end = "\n\n")
+        t = t - f.subs(x, t) / diff(f, x).subs(x, t)
 
-def function(value,expr):
-    
-    val=expr.subs(x,value)
-    return val
-
-
-def newtonRaphson( x , expr):
-    
-    h = function(x, expr) / derivative(x, expr)
-    while abs(h) >= 0.0001:
-        h = function(x, expr) / derivative(x, expr)
-         
-        x = x - h
-        print("The value of the root is : ","%.4f"% x)
+    print("SOLUTION\nx = {x}\nf(x) = {fx}".format(x = t, fx = f.subs(x, t)))
 
 
 
-x,y = symbols('x y')
+f = 3*x + cos(x) - x
+limit = [-1, 0]
 
-z=12
-expr=x**3 - 5*x - 9
+newton_raphson(f,limit)
 
-newtonRaphson(z,expr)
+
 
 
